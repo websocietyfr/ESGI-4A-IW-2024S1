@@ -1,2 +1,24 @@
-<h1>Show Annonces {{ id }}</h1>
-<a href="{{ path('app_annonce_index') }}">Retour à l'accueil</a>
+{% extends 'base.html.twig' %}
+
+{% block title %}Show Annonce {{ id }}{% endblock %}
+{% block pagetitle %}Show Annonce {{ id }}{% endblock %}
+
+{% block body %}
+    <img src="{{ absolute_url(asset('image/logo.png')) }}" />
+    <a href="{{ path('app_annonce_edit', { id: id } ) }}">Modifier l'annonce</a>
+    <a href="{{ path('app_annonce_index') }}">Retour à l'accueil</a>
+    <p>
+        {{ app.request.query.get('a') }}
+    </p>
+    <p>
+        <strong>Price :</strong> {{ price|price }}
+    </p>
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .show_annonce {
+        color: green;
+    }
+</style>
+{% endblock %}
