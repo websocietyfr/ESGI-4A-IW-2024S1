@@ -1,1 +1,13 @@
-<h1>Create Annonce</h1>
+{% extends 'base.html.twig' %}
+
+{% block title %}Création d'une annonce{% endblock %}
+{% block pagetitle %}Création d'une annonce{% endblock %}
+
+{% block body %}
+    <form action="{{ path('app_annonce_create') }}" method="POST">
+        <input type="text" name="title" placeholder="title" />
+        <input type="number" name="price" placeholder="price" />
+        <textarea name="description" placeholder="description"> </textarea>
+        <button>Créer</button>
+    </form>
+{% endblock %}

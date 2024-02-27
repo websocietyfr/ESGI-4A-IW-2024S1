@@ -29,7 +29,7 @@ class Annonce
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $status = null;
 
-    #[ORM\ManyToOne(inversedBy: 'annonces')]
+    #[ORM\ManyToOne(inversedBy: 'annonces', cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
 

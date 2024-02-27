@@ -1,24 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Show Annonce {{ id }}{% endblock %}
-{% block pagetitle %}Show Annonce {{ id }}{% endblock %}
+{% block title %}{{ annonce.title }}{% endblock %}
+{% block pagetitle %}{{ annonce.title }}{% endblock %}
 
 {% block body %}
-    <img src="{{ absolute_url(asset('image/logo.png')) }}" />
-    <a href="{{ path('app_annonce_edit', { id: id } ) }}">Modifier l'annonce</a>
+    <img src="{{ absolute_url(asset(annonce.image)) }}" />
+    <a href="{{ path('app_annonce_edit', { id: annonce.id } ) }}">Modifier l'annonce</a>
+    <a href="{{ path('app_annonce_delete', { id: annonce.id } ) }}">Supprimer l'annonce</a>
     <a href="{{ path('app_annonce_index') }}">Retour à l'accueil</a>
     <p>
-        {{ app.request.query.get('a') }}
+        {{ annonce.description }}
     </p>
     <p>
-        <strong>Price :</strong> {{ price|price }}
+        <strong>Price :</strong> {{ annonce.price|price }}
     </p>
-{% endblock %}
-
-{% block customcss %}
-<style>
-    .show_annonce {
-        color: green;
-    }
-</style>
 {% endblock %}
