@@ -21,10 +21,10 @@ class AnnonceType extends AbstractType
             ->add('price', IntegerType::class)
             ->add('image')
             ->add('status')
-            ->add('author', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'completeName',
-            ])
+            // ->add('author', EntityType::class, [
+            //     'class' => User::class,
+            //     'choice_label' => 'completeName',
+            // ])
             ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer'
             ])

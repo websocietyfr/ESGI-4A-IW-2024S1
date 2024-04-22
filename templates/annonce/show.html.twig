@@ -5,8 +5,10 @@
 
 {% block body %}
     <img src="{{ absolute_url(asset(annonce.image)) }}" />
-    <a href="{{ path('app_annonce_edit', { id: annonce.id } ) }}">Modifier l'annonce</a>
-    <a href="{{ path('app_annonce_delete', { id: annonce.id } ) }}">Supprimer l'annonce</a>
+    {% if (app.user and app.user.id is same as(annonce.author.id)) %}
+        <a href="{{ path('app_annonce_edit', { id: annonce.id } ) }}">Modifier l'annonce</a>
+        <a href="{{ path('app_annonce_delete', { id: annonce.id } ) }}">Supprimer l'annonce</a>
+    {% endif %}
     <a href="{{ path('app_annonce_index') }}">Retour à l'accueil</a>
     <p>
         {{ annonce.description }}

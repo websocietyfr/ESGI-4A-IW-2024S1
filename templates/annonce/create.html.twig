@@ -11,14 +11,14 @@
         <button>Créer</button>
     </form> #}
     {# {{ form(form_obj) }} #}
-    {{ form_start(form_obj, { method: 'GET' }) }}
+    {{ form_start(form_obj) }}
         <p>
           <label>Titre</label>
           {{ form_widget(form_obj.title, { attr: { 'class': 'form-control' } }) }}
         </p>
-        {{ form_widget(form_obj.description) }}
-        {{ form_widget(form_obj.price) }}
-        {{ form_widget(form_obj.image) }}
-        {{ form_widget(form_obj) }}
+        {{ form_row(form_obj.description) }}
+        {{ form_row(form_obj.price) }}
+        {{ form_row(form_obj.image) }}
+        {{ form_row(form_obj.status) }}
     {{ form_end(form_obj) }}
 {% endblock %}

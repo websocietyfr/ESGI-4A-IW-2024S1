@@ -13,6 +13,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UserRepository;
 use App\Form\AnnonceType;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/annonce', name: 'app_annonce_')]
 class AnnonceController extends AbstractController
@@ -36,6 +37,7 @@ class AnnonceController extends AbstractController
     }
     
     #[Route('/create', name: 'create')]
+    #[IsGranted('ROLE_USER')]
     public function create(Request $request, AnnonceRepository $annonceRepository): Response
     {
         $annonce = new Annonce();
@@ -43,7 +45,9 @@ class AnnonceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            if ($form->isValid()) {    
+            if ($form->isValid()) {
+                $user = $this->getUser();
+                $annonce->setAuthor($user);
                 $annonceRepository->add($annonce);
                 return $this->redirectToRoute('app_annonce_index');
             } else {
@@ -68,12 +72,14 @@ class AnnonceController extends AbstractController
     }
     
     #[Route('/{id}/edit', name: 'edit')]
+    #[IsGranted('ANNONCE_EDIT', 'annonce')]
     public function edit(Annonce $annonce): Response
     {
         return $this->render('annonce/edit.html.twig', [ "annonce" => $annonce ]);
     }
     
     #[Route('/{id}/delete', name: 'delete')]
+    #[IsGranted('ROLE_USER')]
     public function delete(Annonce $annonce, EntityManagerInterface $entityManager): RedirectResponse
     {
         $entityManager->remove($annonce);
