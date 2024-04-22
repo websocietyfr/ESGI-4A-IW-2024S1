@@ -208,4 +208,9 @@ class User
 
         return $this;
     }
+
+    public function completeName(): ?string
+    {
+        return $this->getFirstname().' '.$this->getLastname();
+    }
 }

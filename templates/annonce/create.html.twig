@@ -4,10 +4,21 @@
 {% block pagetitle %}Création d'une annonce{% endblock %}
 
 {% block body %}
-    <form action="{{ path('app_annonce_create') }}" method="POST">
+    {# <form action="{{ path('app_annonce_create') }}" method="POST">
         <input type="text" name="title" placeholder="title" />
         <input type="number" name="price" placeholder="price" />
         <textarea name="description" placeholder="description"> </textarea>
         <button>Créer</button>
-    </form>
+    </form> #}
+    {# {{ form(form_obj) }} #}
+    {{ form_start(form_obj, { method: 'GET' }) }}
+        <p>
+          <label>Titre</label>
+          {{ form_widget(form_obj.title, { attr: { 'class': 'form-control' } }) }}
+        </p>
+        {{ form_widget(form_obj.description) }}
+        {{ form_widget(form_obj.price) }}
+        {{ form_widget(form_obj.image) }}
+        {{ form_widget(form_obj) }}
+    {{ form_end(form_obj) }}
 {% endblock %}

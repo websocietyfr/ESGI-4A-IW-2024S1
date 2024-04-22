@@ -12,6 +12,7 @@ use App\Entity\Annonce;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UserRepository;
+use App\Form\AnnonceType;
 
 #[Route('/annonce', name: 'app_annonce_')]
 class AnnonceController extends AbstractController
@@ -35,24 +36,23 @@ class AnnonceController extends AbstractController
     }
     
     #[Route('/create', name: 'create')]
-    public function create(Request $request, AnnonceRepository $annonceRepository, UserRepository $userRepository): Response
+    public function create(Request $request, AnnonceRepository $annonceRepository): Response
     {
-        if ($request->getMethod() === 'POST') {
-            $user = $userRepository->findAll();
+        $annonce = new Annonce();
+        $form = $this->createForm(AnnonceType::class, $annonce);
+        $form->handleRequest($request);
 
-            $annonce = new Annonce();
-            $annonce->setTitle($request->request->get('title'));
-            $annonce->setDescription($request->request->get('description'));
-            $annonce->setPrice($request->request->get('price'));
-            $annonce->setImage('image/logo.png');
-            // $annonce->setAuthor($request->user);
-            $annonce->setAuthor($user[0]);
-
-            $annonceRepository->add($annonce);
-
-            return $this->redirectToRoute('app_annonce_index');
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {    
+                $annonceRepository->add($annonce);
+                return $this->redirectToRoute('app_annonce_index');
+            } else {
+                echo 'Erreur dans la validation du formulaire';
+            }
         }
-        return $this->render('annonce/create.html.twig');
+        return $this->render('annonce/create.html.twig', [
+            'form_obj' => $form
+        ]);
     }
     
     #[Route('/{id}', name: 'show')]
