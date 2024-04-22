@@ -11,27 +11,34 @@ use App\Repository\AnnonceRepository;
 use App\Entity\Annonce;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\UserRepository;
 
 #[Route('/annonce', name: 'app_annonce_')]
 class AnnonceController extends AbstractController
 {
 
     #[Route('/', name: 'index')]
-    public function index(AnnonceRepository $annonceRepository): Response
+    public function index(AnnonceRepository $annonceRepository, Request $request): Response
     {
-        // $annonces = $entityManager->getRepository(Annonce::class)->findAll();
-        $annonces = $annonceRepository->findAll();
+        // dd($request);
+        if ($request->getMethod() === 'GET' && $request->query->get('searchkey')) {
+            $annonces = $annonceRepository->findByTitleField($request->query->get('searchkey'));
+        } else {
+            // $annonces = $entityManager->getRepository(Annonce::class)->findAll();
+            $annonces = $annonceRepository->findAll();
+        }
 
         return $this->render('annonce/index.html.twig', [
-            "annonces" => $annonces
+            "annonces" => $annonces,
+            "searchkey" => $request->query->get('searchkey') ? $request->query->get('searchkey') : null
         ]);
     }
     
     #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $entityManager): Response
+    public function create(Request $request, AnnonceRepository $annonceRepository, UserRepository $userRepository): Response
     {
         if ($request->getMethod() === 'POST') {
-            $user = $entityManager->getRepository(User::class)->findAll();
+            $user = $userRepository->findAll();
 
             $annonce = new Annonce();
             $annonce->setTitle($request->request->get('title'));
@@ -41,8 +48,7 @@ class AnnonceController extends AbstractController
             // $annonce->setAuthor($request->user);
             $annonce->setAuthor($user[0]);
 
-            $entityManager->persist($annonce);
-            $entityManager->flush();
+            $annonceRepository->add($annonce);
 
             return $this->redirectToRoute('app_annonce_index');
         }

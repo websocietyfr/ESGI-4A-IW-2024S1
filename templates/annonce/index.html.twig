@@ -3,10 +3,12 @@
 {% block pagetitle %}INDEX ANNONCE{% endblock %}
 
 {% block body %}
+    {% include 'components/_search_annonce_form.html.twig' with {'search_title': 'Rechercher une annonce' } %}
     {% for annonce in annonces %}
         <p><strong>title :</strong> {{ annonce.title }}</p>
         <p><strong>description :</strong> {{ annonce.description }}</p>
         <p><strong>prix :</strong> {{ annonce.price|price }}</p>
         <p><a href="{{ path('app_annonce_show', { id: annonce.id }) }}">Accéder à l'annonce</a></p>
+        <hr>
     {% endfor %}
 {% endblock %}
