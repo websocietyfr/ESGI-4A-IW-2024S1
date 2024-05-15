@@ -21,6 +21,7 @@ services:
     tty: true
     links:
       - "database:database"
+      - "mailer:mailer"
 
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
@@ -31,13 +32,8 @@ services:
       - "5432:5432"
 ###< doctrine/doctrine-bundle ###
 
-###> symfony/mailer ###
   mailer:
-    image: axllent/mailpit
+    image: mailhog/mailhog
     ports:
-      - "1025"
-      - "8025"
-    environment:
-      MP_SMTP_AUTH_ACCEPT_ANY: 1
-      MP_SMTP_AUTH_ALLOW_INSECURE: 1
-###< symfony/mailer ###
+      - "1025:1025"
+      - "8025:8025"
