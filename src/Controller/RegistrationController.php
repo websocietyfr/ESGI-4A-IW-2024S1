@@ -15,6 +15,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use App\Service\EmailService;
 
 class RegistrationController extends AbstractController
 {
@@ -26,7 +29,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, EmailService $mailer): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -41,27 +44,24 @@ class RegistrationController extends AbstractController
                 )
             );
 
+            $mailer->sendTextEmail(
+                $user->getEmail(),
+                'Confirmation de création de compte',
+                'Bonjour, '.$user->getFirstname().' '.$user->getLastname().' Votre compte à bien été créé',
+                'Bonjour, <strong>'.$user->getFirstname().' '.$user->getLastname().'</strong> Votre compte à bien été crée'
+            );
+
+            $mailer->sendTemplatedEmail(
+                $user->getEmail(),
+                'Confirmation de création de compte',
+                'registration/confirmation_email.html.twig',
+                [
+                    'signedUrl' => 'https://esgi.fr'
+                ]
+            );
+
             $entityManager->persist($user);
             $entityManager->flush();
-
-            // generate a signed url and email it to the user
-            // $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-            //     (new TemplatedEmail())
-            //         ->from(new Address('', ''))
-            //         ->to($user->getEmail())
-            //         ->subject('Please Confirm your Email')
-            //         ->htmlTemplate('registration/confirmation_email.html.twig')
-            // );
-            // do anything else you need here, like send an email
-
-            $email = (new Email())
-                ->from('no-reply@websociety.fr')
-                ->to($user->getEmail())
-                ->subject('Confirmation de création de compte')
-                ->text('Bonjour, '.$user->getFirstname().' '.$user->getLastname().' Votre compte à bien été créé')
-                ->html('Bonjour, <strong>'.$user->getFirstname().' '.$user->getLastname().'</strong> Votre compte à bien été crée');
-            
-            $mailer->send($email);
 
             return $this->redirectToRoute('app_login');
         }
